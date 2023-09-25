@@ -1,5 +1,7 @@
 # ChatGLM2 Docker
 
+使用 ChatGLM2 6B 模型的聊天机器人服务
+
 ```bash
 # 创建 chatglm vm
 cd terraform/alicoud
