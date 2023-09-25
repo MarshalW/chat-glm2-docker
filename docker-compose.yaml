@@ -1,0 +1,18 @@
+version: "3"
+services:
+  nvidia:
+    build: .
+    container_name: proto
+    ports:
+      - "7860:7860"
+      - "8000:8000"
+    tty: true
+    volumes:
+      - ./huggingface:/root/.cache/huggingface/hub
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
