@@ -1,4 +1,6 @@
 
+# 调试记录，不能直接运行
+
 sudo apt update && sudo apt upgrade -y
 
 # 安装驱动
@@ -15,8 +17,6 @@ nvidia-smi
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker $USER
-
-# 安装 nvidia driver
 
 # 安装 nvidia container toolkit
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \

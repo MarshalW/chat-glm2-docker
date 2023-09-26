@@ -1,11 +1,18 @@
 version: "3"
+
+networks:
+  llm:
+    name: llm
 services:
-  nvidia:
+  chat:
     build: .
-    container_name: proto
-    ports:
-      - "7860:7860"
-      - "8000:8000"
+    container_name: chat
+    restart: always
+    networks:
+      - llm
+    expose:
+      - 7860
+      - 8000
     tty: true
     volumes:
       - ./huggingface:/root/.cache/huggingface/hub
@@ -16,3 +23,46 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.host=chat"
+      - "traefik.http.routers.chat.rule=Host(`chat.witmob.com`)"
+      - "traefik.http.routers.chat.entrypoints=websecure"
+      - "traefik.http.routers.chat.tls.certresolver=myresolver"
+      - "traefik.http.services.chat.loadbalancer.server.port=7860"
+
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - llm
+    command:
+      # - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+
+      # published ports
+      # http
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # https
+      - "--entrypoints.websecure.address=:443"
+
+      # tls resolver
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=dnspod"
+      - "--certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+
+      - "--serversTransport.insecureSkipVerify=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DNSPOD_API_KEY=${DNSPOD_ID},${DNSPOD_TOKEN}

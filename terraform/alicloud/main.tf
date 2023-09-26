@@ -2,10 +2,10 @@ provider "alicloud" {
   region = "ap-southeast-1" # 新加坡
 }
 
-data "alicloud_images" "default" {
-  name_regex = "^ubuntu_[0-9]+_[0-9]+_x64*"
-  owners     = "system"
-}
+# data "alicloud_images" "default" {
+#   name_regex = "^ubuntu_[0-9]+_[0-9]+_x64*"
+#   owners     = "system"
+# }
 
 # 专用网络
 resource "alicloud_vpc" "vpc" {
@@ -39,9 +39,9 @@ resource "alicloud_security_group_rule" "allow_all_tcp" {
 }
 
 # ip 地址，基于流量计费
-resource "alicloud_eip" "eip" {
-  bandwidth            = "100"
-  internet_charge_type = "PayByTraffic"
+resource "alicloud_eip_address" "eip" {
+  bandwidth    = "100"
+  payment_type = "PayAsYouGo"
 }
 
 # vm - 抢占
@@ -51,7 +51,7 @@ resource "alicloud_instance" "simple_test" {
   instance_type        = "ecs.gn6i-c8g1.2xlarge"
   system_disk_category = "cloud_efficiency"
   system_disk_size     = 60
-  image_id             = "m-t4n30t27gpbgu8vnjnav"
+  image_id             = "m-t4nirjblko6u4hjr2s5v"
   # image_id             = "m-t4nex5nus27q6vj90j4o"
   # image_id             = "ubuntu_22_04_x64_20G_alibase_20230815.vhd"
 
@@ -65,6 +65,7 @@ resource "alicloud_instance" "simple_test" {
 
 # ip 关联 vm
 resource "alicloud_eip_association" "eip_asso" {
-  allocation_id = alicloud_eip.eip.id
+  allocation_id = alicloud_eip_address.eip.id
   instance_id   = alicloud_instance.simple_test.id
 }
+

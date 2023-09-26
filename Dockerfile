@@ -15,6 +15,6 @@ RUN git clone https://github.com/THUDM/ChatGLM2-6B.git
 WORKDIR /project/ChatGLM2-6B
 RUN pip3 install -r requirements.txt
 
-RUN sed -e '$s/share=False/share=True/' web_demo.py > web_demo_remote.py
+RUN sed -e '$s/share=False, inbrowser=True/share=True,server_name="0.0.0.0"/' web_demo.py > web_demo_remote.py
 
 CMD ["python3","web_demo_remote.py"]
