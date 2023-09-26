@@ -2,11 +2,6 @@ provider "alicloud" {
   region = "ap-southeast-1" # 新加坡
 }
 
-# data "alicloud_images" "default" {
-#   name_regex = "^ubuntu_[0-9]+_[0-9]+_x64*"
-#   owners     = "system"
-# }
-
 # 专用网络
 resource "alicloud_vpc" "vpc" {
   vpc_name   = "vpc_default"
@@ -48,10 +43,16 @@ resource "alicloud_eip_address" "eip" {
 resource "alicloud_instance" "simple_test" {
   security_groups = alicloud_security_group.default.*.id
 
+  # t4 16GB
   instance_type        = "ecs.gn6i-c8g1.2xlarge"
   system_disk_category = "cloud_efficiency"
-  system_disk_size     = 60
-  image_id             = "m-t4nirjblko6u4hjr2s5v"
+
+  # # a10 30GB
+  # instance_type        = "ecs.gn7i-c8g1.2xlarge" 
+  # system_disk_category = "cloud_essd"
+
+  system_disk_size = 60
+  image_id         = "m-t4nirjblko6u4hjr2s5v"
   # image_id             = "m-t4nex5nus27q6vj90j4o"
   # image_id             = "ubuntu_22_04_x64_20G_alibase_20230815.vhd"
 
