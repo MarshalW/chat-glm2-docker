@@ -2,6 +2,23 @@
 
 使用 ChatGLM2 6B 模型的聊天机器人服务
 
+## 准备
+
+设置环境变量：
+
+```bash
+export TENCENTCLOUD_SECRET_ID=xxxxx
+export TENCENTCLOUD_SECRET_KEY=xxxxx
+# export TENCENTCLOUD_REGION=ap-beijing
+
+export ALICLOUD_ACCESS_KEY=xxxxx
+export ALICLOUD_SECRET_KEY=xxxxx
+# export ALICLOUD_REGION="cn-beijing"
+```
+
+## 运行
+
+
 ```bash
 # 创建 chatglm vm
 cd terraform/alicoud
